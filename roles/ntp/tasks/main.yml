@@ -1,0 +1,31 @@
+---
+### Network Time Protocol
+- name: Install Chrony (Ubuntu)
+  apt:
+    name: chrony
+    state: latest
+    update_cache: yes
+  when: ansible_distribution == "Ubuntu"
+
+- name: Configuring the chrony.conf (Controller node)
+  lineinfile:
+    path: /etc/chrony/chrony.conf
+    line: server 192.168.56.119 iburst
+  when: ansible_distribution == "Ubuntu"
+
+#- name: adding the key to connect to chrony daemon
+#  lineinfile:
+#    path: /etc/chrony/chrony.conf
+#    line: allow 192.168.56.0/24
+#  when: ansible_distribution == "Ubuntu"
+
+- name: Configuring the chrony.conf (Other nodes)
+  lineinfile:
+    path: /etc/chrony/chrony.conf
+    line: server controller iburst
+  when: ansible_distribution == "Ubuntu"
+
+- name: restarting chrony
+  shell: service chrony restart
+  when: ansible_distribution == "Ubuntu"
+

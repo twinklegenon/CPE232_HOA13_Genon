@@ -1,0 +1,83 @@
+---
+- name: install curl and wget
+  apt:
+    name:
+       - curl
+       - wget
+  when: ansible_distribution == "Ubuntu"
+
+- name: download latest release of etcd
+  shell: export RELEASE=$(curl -s https://api.github.com/repos/etcd-io/etcd/releases/latest|grep tag_name | cut -d '"' -f 4)
+  when: ansible_distribution == "Ubuntu"
+
+- name: download latest release of etcd
+  shell: wget https://github.com/etcd-io/etcd/releases/download/v3.3.12/etcd-v3.3.12-linux-amd64.tar.gz
+  become: yes
+  when: ansible_distribution == "Ubuntu"
+
+- name: extracting the downloaded archive file
+  shell: tar xvf etcd-v3.3.12-linux-amd64.tar.gz
+  when: ansible_distribution == "Ubuntu"
+
+- name: change to new file directory
+  shell: cd etcd-v3.3.12-linux-amd64
+  when: ansible_distribution == "Ubuntu"
+
+#- name: moving etcd and etcdctl binary files to /usr/local/bin directory
+#  shell: sudo mv etcd /usr/local/bin
+#  when: ansible_distribution == "Ubuntu"
+
+- name: create etcd configuration file and data directory
+  shell: sudo mkdir -p /var/lib/etcd
+  when: ansible_distribution == "Ubuntu"
+
+#- name: create etcd configuration file and data directory
+#  shell: sudo mkdir /etc/etcd
+#  when: ansible_distribution == "Ubuntu"
+
+#- name: create etcd system user
+#  shell: sudo groupadd --system etcd
+#  when: ansible_distribution == "Ubuntu"
+
+#- name: create etcd system user
+#  shell: sudo useradd -s /sbin/nologin --system -g etcd etcd
+#  when: ansible_distribution == "Ubuntu"
+
+- name: set /var/lib/etcd/ directory ownership to etcd user
+  shell: sudo chown -R etcd:etcd /var/lib/etcd/
+  when: ansible_distribution == "Ubuntu"
+
+- name: creating a new systemd service file for etcd
+  copy:
+    dest: /etc/systemd/system/etcd.service
+    content: |
+      [Unit]
+      Description=etcd key-value store
+      Documentation= https://github.com/etcd-io/etcd
+      After=network.target
+
+      [Service]
+      User=etcd
+      Type=notify
+      Environment=ETCD_DATA_DIR=/var/lib/etcd
+      Environment=ETCD_NAME=%m
+      ExecStart=/usr/bin/etcd
+      Restart=always
+      RestartSec=10s
+      LimitNOFILE=40000
+      StartLimitBurst=0
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: reload systemd service
+  shell: sudo systemctl daemon-reload
+  when: ansible_distribution == "Ubuntu"
+
+- name: enabling the systemd service
+  shell: sudo systemctl enable etcd
+  when: ansible_distribution == "Ubuntu"
+
+- name: starting the systemd service
+  shell: sudo systemctl start etcd
+  when: ansible_distribution == "Ubuntu"

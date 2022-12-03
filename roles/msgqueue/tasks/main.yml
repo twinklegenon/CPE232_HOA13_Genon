@@ -1,0 +1,14 @@
+---
+
+- name: Installing the packagae for message queue for Ubuntu
+  apt:
+    name: rabbitmq-server
+  when: ansible_distribution == "Ubuntu"
+
+- name: Adding the openstack user
+  shell: sudo rabbitmqctl add_user openstack RABBIT_PASS
+  when: ansible_distribution == "Ubuntu"
+
+- name: permit the openstack user to configure, write and read
+  shell: rabbitmqctl set_permissions openstack ".*" ".*" ".*"
+  when: ansible_distribution == "Ubuntu"

@@ -1,0 +1,54 @@
+---
+### OpenStack Packages
+
+- name: enable openstack repository
+  shell: sudo apt install software-properties-common
+  when: ansible_distribution == "Ubuntu"
+
+### OPENSTACK YOGA IS AVAILABLE BY DEFAULT IN UBUNTU 22.04 LTS ###
+
+#- name: OpenStack Yoga for Ubuntu 20.04 LTS
+#  shell: sudo add-apt-repository ppa:ubuntu-cloud-archive/yoga-proposed
+#  when: ansible_distribution == "Ubuntu"
+
+####FOLLOWING ARE NOT SUPPORTED BY JAMMY UBUNTU###
+
+#- name: OpenStack Xena for Ubuntu 20.04 LTS
+#  shell: sudo add-apt-repository ppa:ubuntu-cloud-archive/xena-proposed
+#  when: ansible_distribution == "Ubuntu"
+
+#- name: OpenStack Wallaby for Ubuntu 20.04 LTS
+#  shell: sudo add-apt-repository ppa:ubuntu-cloud-archive/wallaby-proposed
+#  when: ansible_distribution == "Ubuntu"
+
+#- name: OpenStack Victoria for Ubuntu 20.04 LTS
+#  shell: sudo add-apt-repository ppa:ubuntu-cloud-archive/victoria-proposed
+#  when: ansible_distribution == "Ubuntu"
+
+#- name: OpenStack Ussuri for Ubuntu 18.04 LTS
+#  shell: sudo add-apt-repository cloud-archive:ussuri
+#  when: ansible_distribution == "Ubuntu"
+
+#- name: OpenStack Train for Ubuntu 18.04 LTS
+#  shell: sudo add-apt-repository cloud-archive:train
+#  when: ansible_distribution == "Ubuntu"
+
+#- name: OpenStack Stein for Ubuntu 18.04 LTS
+#  shell: sudo add-apt-repository cloud-archive:stein
+#  when: ansible_distribution == "Ubuntu"
+
+#- name: OpenStack Rocky for Ubuntu 18.04 LTS
+#  shell: sudo add-apt-repository cloud-archive:rocky
+#  when: ansible_distribution == "Ubuntu"
+
+#- name: OpenStack Queens for Ubuntu 20.04 LTS
+#  shell: sudo add-apt-repository cloud-archive:queens
+#  when: ansible_distribution == "Ubuntu"
+
+- name: sample installation
+  shell: sudo apt install nova-compute
+  when: ansible_distribution == "Ubuntu"
+
+- name: Client Installation
+  shell: sudo apt install python3-openstackclient
+  when: ansible_distribution == "Ubuntu"

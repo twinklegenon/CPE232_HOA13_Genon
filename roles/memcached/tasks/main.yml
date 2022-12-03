@@ -1,0 +1,27 @@
+---
+- name: Installing and Configuring components for Memcached Ubuntu
+  apt:
+    name:
+       - memcached
+       - libmemcached-tools
+  when: ansible_distribution == "Ubuntu"
+
+- name: Installing and Configuring components for Memcached Ubuntu
+  apt:
+    name: python3-memcache
+  when: ansible_distribution == "Ubuntu"
+
+#Comment this out if connecting to the localhost###
+
+#- name: Configuring the service to use the management IP address
+#  lineinfile:
+#    path: /etc/memcached.conf
+#    line: -l 192.168.56.119
+#  when: ansible_distribution == "Ubuntu"
+
+
+- name: Restarting the Memcached service
+  shell: service memcached restart
+  when: ansible_distribution == "Ubuntu"
+
+###StartLimitBurst=0 when error starting too quickly appears###
